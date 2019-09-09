@@ -19,6 +19,7 @@
                 "https://www.myges.fr/student/planning-calendar"
             ],
             "js": [
+                "lib/jquery-3.4.1.js",
                 "content.js"
             ]
         }
