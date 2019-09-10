@@ -1,0 +1,28 @@
+{
+    "manifest_version": 2,
+    "name": "Getting Started Example",
+    "version": "1.0",
+    "description": "Build an Extension!",
+    "page_action": {
+        "default_icon": "calendar-32.png",
+        "default_popup": "popup.html"
+    },
+    "background": {
+        "scripts": [
+            "js/background.bundle.js"
+        ],
+        "persistent": false
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "https://www.myges.fr/student/planning-calendar"
+            ],
+            "js": [
+                "js/content.bundle.js"
+            ]
+        }
+    ],
+    "permissions": ["declarativeContent"],
+    "optional_permissions": []
+}
