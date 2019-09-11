@@ -4,7 +4,13 @@
         "outDir": "./dist/js",
         "noImplicitAny": true,
         "module": "es6",
-        "target": "es6"
-        //"allowJs": false
-    }
+        "target": "es6",
+        "lib": [
+            "esnext",
+            "dom"
+        ]
+    },
+    "exclude": [
+        "node_modules"
+    ]
 }
