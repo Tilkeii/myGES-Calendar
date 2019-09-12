@@ -1,6 +1,7 @@
 const CopyPlugin = require('copy-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const path = require('path');
+require('dotenv').config();
 const srcDir = '../src/';
 
 module.exports = {
@@ -31,8 +32,22 @@ module.exports = {
             {
                 from: '.',
                 to: '..',
-                context: 'public'
+                context: 'public',
+                ignore: ['manifest.json']
+            }
+        ]),
+        new CopyPlugin([
+            {
+                from: 'manifest.json',
+                to: '..',
+                context: 'public',
+                transform(content, path) {
+                    return content
+                        .toString()
+                        .replace('__GOOGLE_CLIENT_ID__', process.env.GOOGLE_CLIENT_ID);
+                },
             }
         ])
     ]
+
 };

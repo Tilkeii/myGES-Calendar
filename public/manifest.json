@@ -23,6 +23,16 @@
             ]
         }
     ],
-    "permissions": ["declarativeContent"],
-    "optional_permissions": []
+    "permissions": [
+        "declarativeContent",
+        "identity"
+    ],
+    "optional_permissions": [],
+    "oauth2": {
+        "client_id": "__GOOGLE_CLIENT_ID__",
+        "scopes": [
+            "https://www.googleapis.com/auth/calendar",
+            "https://www.googleapis.com/auth/calendar.events"
+        ]
+    }
 }
