@@ -1,5 +1,6 @@
 const CopyPlugin = require('copy-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const path = require('path');
 require('dotenv').config();
 const srcDir = '../src/';
@@ -16,6 +17,15 @@ module.exports = {
     },
     module: {
         rules: [
+            {
+                test: /\.css$/,
+                use: [
+                    {
+                        loader: MiniCssExtractPlugin.loader,
+                    },
+                    'css-loader',
+                ],
+            },
             {
                 test: /\.tsx?$/,
                 use: 'ts-loader',
@@ -47,7 +57,10 @@ module.exports = {
                         .replace('__GOOGLE_CLIENT_ID__', process.env.GOOGLE_CLIENT_ID);
                 },
             }
-        ])
+        ]),
+        new MiniCssExtractPlugin({
+            filename: '../css/[name].css'
+        })
     ]
 
 };

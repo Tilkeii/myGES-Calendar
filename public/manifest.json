@@ -25,7 +25,8 @@
     ],
     "permissions": [
         "declarativeContent",
-        "identity"
+        "identity",
+        "storage"
     ],
     "optional_permissions": [],
     "oauth2": {
