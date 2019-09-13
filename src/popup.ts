@@ -7,7 +7,11 @@ console.log("Popup");
 
 $('form#loginForm').submit(async ev => {
     ev.preventDefault();
-    console.log('Submit')
+    // console.log('Submit');
+    let email = $("#email").val();
+    let password = $("#password").val();
+    let auth = makeBaseAuth(email, password);
+    connectMyGes(auth);
 });
 
 /**
@@ -44,21 +48,11 @@ function logout(token: string): Promise<void> {
     });
 }
 
-$('#test-button').click((ev) => {
-    ev.preventDefault();
-    connectMyGesTest();
-})
-
-function makeBaseAuth(user: String, password: String) {
+function makeBaseAuth(user: any, password: any) {
     let tok = user + ':' + password;
     let hash = btoa(tok);
     return "Basic " + hash;
 }
-
-let userName = 'frichard5';
-let password = 'nE6HbvT3';
-
-let auth = makeBaseAuth(userName, password);
 
 let connectMyGes = (auth: any) => {
     $.post({
@@ -71,13 +65,14 @@ let connectMyGes = (auth: any) => {
         success: function(data){
             console.log("success : ", data)
         },
-        error: function(data: any){
+        error: function(data: any, options, errorThrown){
             console.log("error : ", eval(data));
+            let str = eval(data).toString();
+            let token = str.match("token=(.*)&token");
+            console.log("token = " + token);
+            // console.log("data = " + JSON.parse(data.responseText));
+            console.log("error = " + errorThrown);
         }
 
     })
-}
-
-let connectMyGesTest = () => {
-    connectMyGes(auth);
 }
