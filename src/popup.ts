@@ -43,3 +43,41 @@ function logout(token: string): Promise<void> {
         }
     });
 }
+
+$('#test-button').click((ev) => {
+    ev.preventDefault();
+    connectMyGesTest();
+})
+
+function makeBaseAuth(user: String, password: String) {
+    let tok = user + ':' + password;
+    let hash = btoa(tok);
+    return "Basic " + hash;
+}
+
+let userName = 'frichard5';
+let password = 'nE6HbvT3';
+
+let auth = makeBaseAuth(userName, password);
+
+let connectMyGes = (auth: any) => {
+    $.post({
+        url: 'https://authentication.reseau-ges.fr/oauth/authorize?response_type=token&client_id=myGES-app',
+
+        method: 'POST',
+        beforeSend: function(req){
+            req.setRequestHeader('Authorization', auth)
+        },
+        success: function(data){
+            console.log("success : ", data)
+        },
+        error: function(data: any){
+            console.log("error : ", eval(data));
+        }
+
+    })
+}
+
+let connectMyGesTest = () => {
+    connectMyGes(auth);
+}
