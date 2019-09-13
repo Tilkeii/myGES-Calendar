@@ -15,11 +15,3 @@ chrome.runtime.onInstalled.addListener(function () {
         }]);
     });
 });
-
-chrome.identity.getAuthToken({ interactive: true }, function (token) {
-    console.log(token);
-});
-
-chrome.storage.local.set({version: '1.0.0'}, () => {
-    console.log('Settings set !');
-})
