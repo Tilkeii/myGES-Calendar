@@ -1,5 +1,5 @@
 import 'bulma/css/bulma.min.css';
-import '@fortawesome/fontawesome-free/js/fontawesome.min';
+import '@fortawesome/fontawesome-free/js/all';
 import './css/custom.css';
 import * as $ from 'jquery';
 
