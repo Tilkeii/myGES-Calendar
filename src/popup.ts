@@ -2,6 +2,7 @@ import 'bulma/css/bulma.min.css';
 import '@fortawesome/fontawesome-free/js/all';
 import './css/custom.css';
 import * as $ from 'jquery';
+import { MyGESAuth } from './types/auth';
 
 console.log("Popup");
 
@@ -11,7 +12,12 @@ $('form#loginForm').submit(async ev => {
     let email = $("#email").val();
     let password = $("#password").val();
     let auth = makeBaseAuth(email, password);
-    connectMyGes(auth);
+    try {
+        let data: MyGESAuth = await connectMyGes(auth);
+        console.log("DATA", data);
+    } catch (err) {
+        console.log(err);
+    }
 });
 
 /**
@@ -21,12 +27,12 @@ $('form#loginForm').submit(async ev => {
  * @param interactive 
  */
 function getAuthToken(interactive: boolean = true): Promise<string> {
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
         chrome.identity.getAuthToken({ interactive: interactive }, (token: string) => {
             if (token)
-                resolve(token);
+                return resolve(token);
             else
-                throw new Error('Token introuvable');
+                return reject('Token introuvable');
         })
     })
 }
@@ -36,14 +42,14 @@ function getAuthToken(interactive: boolean = true): Promise<string> {
  * @param token 
  */
 function logout(token: string): Promise<void> {
-    return new Promise(async resolve => {
+    return new Promise(async (resolve, reject) => {
         try {
             await $.get(`https://accounts.google.com/o/oauth2/revoke?token=${token}`);
             chrome.identity.removeCachedAuthToken({ token: token }, () => {
-                resolve();
+                return resolve();
             });
         } catch (err) {
-            throw new Error(err);
+            return reject(err);
         }
     });
 }
@@ -54,19 +60,21 @@ function makeBaseAuth(user: any, password: any) {
     return "Basic " + hash;
 }
 
-let connectMyGes = (auth: any) => {
-    $.ajax({
-        url: process.env.URL_MYGES_TOKEN,
-        method: 'GET',
-        headers: {
-            'Authorization': auth
-        },
-        dataType: 'json',
-        success: function(data: JSON, textStatus: JQuery.Ajax.SuccessTextStatus, xhr: JQuery.jqXHR){
-            console.log('Success', data, textStatus, xhr);
-        },
-        error: function(xhr: JQuery.jqXHR, textStatus: JQuery.Ajax.ErrorTextStatus, errorThrown: string){
-            console.log('Error', xhr, textStatus, errorThrown);
+let connectMyGes = (auth: any): Promise<MyGESAuth> => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let success: MyGESAuth = await $.ajax({
+                url: process.env.URL_MYGES_TOKEN,
+                method: 'GET',
+                headers: {
+                    'Authorization': auth
+                },
+                dataType: 'json'
+            });
+            console.log('Success', success);
+            return resolve(success);
+        } catch (err) {
+            return reject(err);
         }
     })
 }
