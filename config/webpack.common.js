@@ -2,6 +2,7 @@ const CopyPlugin = require('copy-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const path = require('path');
+const Dotenv = require('dotenv-webpack');
 require('dotenv').config();
 const srcDir = '../src/';
 
@@ -54,13 +55,15 @@ module.exports = {
                 transform(content, path) {
                     return content
                         .toString()
-                        .replace('__GOOGLE_CLIENT_ID__', process.env.GOOGLE_CLIENT_ID);
+                        .replace('__GOOGLE_CLIENT_ID__', process.env.GOOGLE_CLIENT_ID)
+                        .replace('__URL_MYGES_TOKEN__', process.env.URL_MYGES_TOKEN);
                 },
             }
         ]),
         new MiniCssExtractPlugin({
             filename: '../css/[name].css'
-        })
+        }),
+        new Dotenv()
     ]
 
 };

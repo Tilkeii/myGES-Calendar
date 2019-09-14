@@ -55,24 +55,18 @@ function makeBaseAuth(user: any, password: any) {
 }
 
 let connectMyGes = (auth: any) => {
-    $.post({
-        url: 'https://authentication.reseau-ges.fr/oauth/authorize?response_type=token&client_id=myGES-app',
-
-        method: 'POST',
-        beforeSend: function(req){
-            req.setRequestHeader('Authorization', auth)
+    $.ajax({
+        url: process.env.URL_MYGES_TOKEN,
+        method: 'GET',
+        headers: {
+            'Authorization': auth
         },
-        success: function(data){
-            console.log("success : ", data)
+        dataType: 'json',
+        success: function(data: JSON, textStatus: JQuery.Ajax.SuccessTextStatus, xhr: JQuery.jqXHR){
+            console.log('Success', data, textStatus, xhr);
         },
-        error: function(data: any, options, errorThrown){
-            console.log("error : ", eval(data));
-            let str = eval(data).toString();
-            let token = str.match("token=(.*)&token");
-            console.log("token = " + token);
-            // console.log("data = " + JSON.parse(data.responseText));
-            console.log("error = " + errorThrown);
+        error: function(xhr: JQuery.jqXHR, textStatus: JQuery.Ajax.ErrorTextStatus, errorThrown: string){
+            console.log('Error', xhr, textStatus, errorThrown);
         }
-
     })
 }
