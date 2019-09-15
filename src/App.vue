@@ -2,36 +2,22 @@
     <section class="section">
         <div class="container">
             <div class="columns">
-                <form id="loginForm">
-                    <div class="field has-addons">
-                        <p class="control has-icons-left">
-                            <input class="input" type="text" placeholder="Email" id="email" />
-                            <span class="icon is-small is-left">
-                                <i class="fas fa-envelope"></i>
-                            </span>
-                        </p>
-                        <p class="control">
+                <form @submit.prevent="onLoginSubmit">
+                    <b-field>
+                        <b-input v-model="email" type="text" placeholder="Email"></b-input>
+                        <div class="control">
                             <a class="button is-static">@myges.fr</a>
-                        </p>
-                    </div>
-                    <div class="field">
-                        <p class="control has-icons-left">
-                            <input
-                                class="input"
-                                type="password"
-                                placeholder="Password"
-                                id="password"
-                            />
-                            <span class="icon is-small is-left">
-                                <i class="fas fa-lock"></i>
-                            </span>
-                        </p>
-                    </div>
-                    <div class="field">
+                        </div>
+                    </b-field>
+                    <b-field>
+                        <b-input v-model="password" type="password" placeholder="Password"></b-input>
+                    </b-field>
+
+                    <b-field>
                         <p class="control has-text-centered">
-                            <button type="submit" class="button is-success">Login</button>
+                            <b-button type="is-primary" native-type="submit">Se connecter</b-button>
                         </p>
-                    </div>
+                    </b-field>
                 </form>
             </div>
         </div>
@@ -39,19 +25,92 @@
 </template>
 
 <style scoped>
-h1 {
-    color: rebeccapurple;
-}
 </style>
 
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
+import { MyGESAuth } from "./types/auth";
 
 @Component
 export default class App extends Vue {
-    public created() {
+    private email: string = "";
+    private password: string = "";
+
+    private created() {
         console.log("Create App");
+    }
+
+    private async onLoginSubmit(): Promise<void> {
+        console.log("Submit");
+        const auth = this.makeBaseAuth(this.email, this.password);
+        try {
+            const gesAuth = await this.connectMyGes(auth);
+            console.log(gesAuth);
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    /**
+     * Retourne le token si il existe
+     * Rejete une erreur si il n'existe pas
+     * Interactive => https://developer.chrome.com/apps/identity#method-getAuthToken
+     * @param interactive
+     */
+    private getAuthToken(interactive: boolean = true): Promise<string> {
+        return new Promise((resolve, reject) => {
+            chrome.identity.getAuthToken(
+                { interactive: interactive },
+                (token: string) => {
+                    if (token) return resolve(token);
+                    else return reject("Token introuvable");
+                }
+            );
+        });
+    }
+
+    /**
+     * Se deconnecter de Google
+     * @param token
+     */
+    private logout(token: string): Promise<void> {
+        return new Promise(async (resolve, reject) => {
+            try {
+                await this.$http.get(
+                    `https://accounts.google.com/o/oauth2/revoke?token=${token}`
+                );
+                chrome.identity.removeCachedAuthToken({ token: token }, () => {
+                    return resolve();
+                });
+            } catch (err) {
+                return reject(err);
+            }
+        });
+    }
+
+    private makeBaseAuth(user: any, password: any) {
+        let tok = user + ":" + password;
+        let hash = btoa(tok);
+        return "Basic " + hash;
+    }
+
+    private connectMyGes(auth: any): Promise<MyGESAuth> {
+        return new Promise(async (resolve, reject) => {
+            try {
+                let { data } = await this.$http.get<MyGESAuth>(
+                    process.env.URL_MYGES_TOKEN,
+                    {
+                        headers: {
+                            Authorization: auth
+                        }
+                    }
+                );
+                return resolve(data);
+            } catch (err) {
+                return reject(err);
+            }
+        });
     }
 }
 </script>

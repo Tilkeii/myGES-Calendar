@@ -1,89 +1,33 @@
-import 'bulma/css/bulma.min.css';
-// import '@fortawesome/fontawesome-free/js/all';
-// import './css/custom.css';
-// import * as $ from 'jquery';
-// import { MyGESAuth } from './types/auth';
+import Buefy from 'buefy';
+import 'buefy/dist/buefy.css';
+import Vue from 'vue';
+import App from './App.vue';
+import axios from 'axios';
 
-// console.log("Popup");
+Vue.config.productionTip = false;
 
-// $('form#loginForm').submit(async ev => {
-//     ev.preventDefault();
-//     // console.log('Submit');
-//     let email = $("#email").val();
-//     let password = $("#password").val();
-//     let auth = makeBaseAuth(email, password);
-//     try {
-//         let data: MyGESAuth = await connectMyGes(auth);
-//         console.log("DATA", data);
-//     } catch (err) {
-//         console.log(err);
-//     }
-// });
+/**
+ * Vue Configuration
+ */
 
-// /**
-//  * Retourne le token si il existe
-//  * Rejete une erreur si il n'existe pas
-//  * Interactive => https://developer.chrome.com/apps/identity#method-getAuthToken
-//  * @param interactive 
-//  */
-// function getAuthToken(interactive: boolean = true): Promise<string> {
-//     return new Promise((resolve, reject) => {
-//         chrome.identity.getAuthToken({ interactive: interactive }, (token: string) => {
-//             if (token)
-//                 return resolve(token);
-//             else
-//                 return reject('Token introuvable');
-//         })
-//     })
-// }
+Vue.use(Buefy);
 
-// /**
-//  * 
-//  * @param token 
-//  */
-// function logout(token: string): Promise<void> {
-//     return new Promise(async (resolve, reject) => {
-//         try {
-//             await $.get(`https://accounts.google.com/o/oauth2/revoke?token=${token}`);
-//             chrome.identity.removeCachedAuthToken({ token: token }, () => {
-//                 return resolve();
-//             });
-//         } catch (err) {
-//             return reject(err);
-//         }
-//     });
-// }
+/**
+ * Axios Configuration
+ */
 
-// function makeBaseAuth(user: any, password: any) {
-//     let tok = user + ':' + password;
-//     let hash = btoa(tok);
-//     return "Basic " + hash;
-// }
+axios.defaults.baseURL = process.env.VUE_APP_API_URL;
 
-// let connectMyGes = (auth: any): Promise<MyGESAuth> => {
-//     return new Promise(async (resolve, reject) => {
-//         try {
-//             let success: MyGESAuth = await $.ajax({
-//                 url: process.env.URL_MYGES_TOKEN,
-//                 method: 'GET',
-//                 headers: {
-//                     'Authorization': auth
-//                 },
-//                 dataType: 'json'
-//             });
-//             console.log('Success', success);
-//             return resolve(success);
-//         } catch (err) {
-//             return reject(err);
-//         }
-//     })
-// }
+/**
+ * Vue variables globales
+ */
 
-import Vue from 'vue'
-import App from './App.vue'
+ Vue.prototype.$http = axios;
 
-Vue.config.productionTip = false
+/**
+ * Vue Instantiation
+ */
 
 new Vue({
   render: h => h(App)
-}).$mount('#app')
+}).$mount('#app');
