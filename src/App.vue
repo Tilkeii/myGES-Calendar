@@ -7,7 +7,9 @@
                     <router-link to="/login">Login</router-link>
                 </div>
                 <div class="column">
-                    <router-view></router-view>
+                    <transition name="fade" mode="out-in">
+                        <router-view />
+                    </transition>
                 </div>
             </div>
         </div>
@@ -15,6 +17,13 @@
 </template>
 
 <style scoped>
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 0.5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+    opacity: 0;
+}
 </style>
 
 <script lang="ts">
