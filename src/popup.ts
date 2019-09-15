@@ -1,6 +1,7 @@
 import Buefy from 'buefy';
 import 'buefy/dist/buefy.css';
 import Vue from 'vue';
+import router from './router';
 import App from './App.vue';
 import axios from 'axios';
 
@@ -22,12 +23,13 @@ axios.defaults.baseURL = process.env.VUE_APP_API_URL;
  * Vue variables globales
  */
 
- Vue.prototype.$http = axios;
+Vue.prototype.$http = axios;
 
 /**
  * Vue Instantiation
  */
 
 new Vue({
+  router,
   render: h => h(App)
 }).$mount('#app');
