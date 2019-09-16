@@ -3,12 +3,13 @@
         "rootDir": "src",
         "outDir": "./dist/js",
         "noImplicitAny": true,
-        "module": "es6",
+        "module": "commonjs",
         "target": "es6",
         "lib": [
             "esnext",
             "dom"
-        ]
+        ],
+        "experimentalDecorators": true
     },
     "exclude": [
         "node_modules"

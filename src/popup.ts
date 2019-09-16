@@ -1,45 +1,35 @@
-import 'bulma/css/bulma.min.css';
-import '@fortawesome/fontawesome-free/js/all';
-import './css/custom.css';
-import * as $ from 'jquery';
+import Buefy from 'buefy';
+import 'buefy/dist/buefy.css';
+import Vue from 'vue';
+import router from './router';
+import App from './App.vue';
+import axios from 'axios';
 
-console.log("Popup");
-
-$('form#loginForm').submit(async ev => {
-    ev.preventDefault();
-    console.log('Submit')
-});
+Vue.config.productionTip = false;
 
 /**
- * Retourne le token si il existe
- * Rejete une erreur si il n'existe pas
- * Interactive => https://developer.chrome.com/apps/identity#method-getAuthToken
- * @param interactive 
+ * Vue Configuration
  */
-function getAuthToken(interactive: boolean = true): Promise<string> {
-    return new Promise(resolve => {
-        chrome.identity.getAuthToken({ interactive: interactive }, (token: string) => {
-            if (token)
-                resolve(token);
-            else
-                throw new Error('Token introuvable');
-        })
-    })
-}
+
+Vue.use(Buefy);
 
 /**
- * 
- * @param token 
+ * Axios Configuration
  */
-function logout(token: string): Promise<void> {
-    return new Promise(async resolve => {
-        try {
-            await $.get(`https://accounts.google.com/o/oauth2/revoke?token=${token}`);
-            chrome.identity.removeCachedAuthToken({ token: token }, () => {
-                resolve();
-            });
-        } catch (err) {
-            throw new Error(err);
-        }
-    });
-}
+
+axios.defaults.baseURL = process.env.VUE_APP_API_URL;
+
+/**
+ * Vue variables globales
+ */
+
+Vue.prototype.$http = axios;
+
+/**
+ * Vue Instantiation
+ */
+
+new Vue({
+  router,
+  render: h => h(App)
+}).$mount('#app');
