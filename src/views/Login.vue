@@ -23,7 +23,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
-import { MyGESAuth } from "../types/auth";
+import { IMyGESAuth } from "../types/auth";
 
 @Component
 export default class Login extends Vue {
@@ -51,10 +51,10 @@ export default class Login extends Vue {
         return "Basic " + hash;
     }
 
-    private connectMyGes(auth: any): Promise<MyGESAuth> {
+    private connectMyGes(auth: any): Promise<IMyGESAuth> {
         return new Promise(async (resolve, reject) => {
             try {
-                let { data } = await this.$http.get<MyGESAuth>(
+                let { data } = await this.$http.get<IMyGESAuth>(
                     process.env.URL_MYGES_TOKEN,
                     {
                         headers: {
