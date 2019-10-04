@@ -51,22 +51,16 @@ export default class Login extends Vue {
         return "Basic " + hash;
     }
 
-    private connectMyGes(auth: any): Promise<IMyGESAuth> {
-        return new Promise(async (resolve, reject) => {
-            try {
-                let { data } = await this.$http.get<IMyGESAuth>(
-                    process.env.URL_MYGES_TOKEN,
-                    {
-                        headers: {
-                            Authorization: auth
-                        }
-                    }
-                );
-                return resolve(data);
-            } catch (err) {
-                return reject(err);
+    private async connectMyGes(auth: any): Promise<IMyGESAuth> {
+        let { data } = await this.$http.get<IMyGESAuth>(
+            process.env.URL_MYGES_TOKEN,
+            {
+                headers: {
+                    Authorization: auth
+                }
             }
-        });
+        );
+        return data;
     }
 }
 </script>
