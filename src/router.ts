@@ -41,8 +41,7 @@ const router: Router = new Router({
 
 router.beforeEach(async (to, from, next) => {
     if (to.matched.some((record) => record.meta.requireAuth)) {
-        let auth = await Storage.retrieveAuth();
-        if (Object.keys(auth).length === 0) {
+        if (!await Storage.isAuthentificated()) {
             next({
                 name: "Login"
             });
@@ -55,8 +54,7 @@ router.beforeEach(async (to, from, next) => {
 });
 
 async function denyAuth(to: Route, from: Route, next: any) {
-    let auth = await Storage.retrieveAuth();
-    if (Object.keys(auth).length > 0) {
+    if (await Storage.isAuthentificated()) {
         next({
             name: from.name ? from.name : "Home"
         });
@@ -64,6 +62,5 @@ async function denyAuth(to: Route, from: Route, next: any) {
         next();
     }
 }
-
 
 export default router;

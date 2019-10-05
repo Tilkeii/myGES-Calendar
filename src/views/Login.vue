@@ -1,5 +1,6 @@
 <template>
     <div class="columns">
+        <b-loading :active="loading"></b-loading>
         <form @submit.prevent="onLoginSubmit">
             <b-field>
                 <b-input v-model="email" type="text" placeholder="Email"></b-input>
@@ -13,7 +14,7 @@
 
             <b-field>
                 <p class="control has-text-centered">
-                    <b-button type="is-primary" native-type="submit">Se connecter</b-button>
+                    <b-button type="is-primary" native-type="submit" :loading="loading">Se connecter</b-button>
                 </p>
             </b-field>
         </form>
@@ -30,6 +31,7 @@ import * as Storage from "../scripts/storage";
 export default class Login extends Vue {
     private email: string = "";
     private password: string = "";
+    private loading: boolean = false;
 
     private created() {
         console.log("Login Component Loaded");
@@ -37,6 +39,7 @@ export default class Login extends Vue {
 
     private async onLoginSubmit(): Promise<void> {
         console.log("Submit");
+        this.loading = true;
         const auth = this.makeBaseAuth(this.email, this.password);
         try {
             const gesAuth = await this.connectMyGes(auth);
@@ -45,6 +48,8 @@ export default class Login extends Vue {
             this.$router.push({name: 'Home'});
         } catch (err) {
             console.log(err);
+        } finally {
+            this.loading = false;
         }
     }
 

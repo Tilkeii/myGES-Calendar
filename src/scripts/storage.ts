@@ -29,3 +29,7 @@ export async function saveAuth(auth: IMyGESAuth): Promise<void> {
 export async function retrieveAuth(): Promise<IMyGESAuth> {
     return await get<IMyGESAuth>('auth');
 }
+
+export async function isAuthentificated(): Promise<boolean> {
+    return Object.keys(await retrieveAuth()).length > 0;
+}
