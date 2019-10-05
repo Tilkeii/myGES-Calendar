@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import Router from 'vue-router';
-import Home from './views/Home.vue';
+import Router, { Route } from 'vue-router';
+import * as Storage from './scripts/storage';
 
 Vue.use(Router);
 
@@ -11,12 +11,14 @@ const router: Router = new Router({
         {
             path: '/',
             name: 'Home',
-            component: () => import('./views/Home.vue')
+            component: () => import('./views/Home.vue'),
+            meta: { requireAuth: true }
         },
         {
             path: '/login',
             name: 'Login',
-            component: () => import('./views/Login.vue')
+            component: () => import('./views/Login.vue'),
+            beforeEnter: denyAuth
         },
         {
             path: '/popup.html',
@@ -31,10 +33,37 @@ const router: Router = new Router({
     ]
 });
 
-router.beforeEach((to, from, next) => {
-    console.log('Router to', to);
-    console.log('Router from', from);
-    next();
+// router.beforeEach((to, from, next) => {
+//     console.log('Router to', to);
+//     console.log('Router from', from);
+//     next();
+// });
+
+router.beforeEach(async (to, from, next) => {
+    if (to.matched.some((record) => record.meta.requireAuth)) {
+        let auth = await Storage.retrieveAuth();
+        if (Object.keys(auth).length === 0) {
+            next({
+                name: "Login"
+            });
+        } else {
+            next();
+        }
+    } else {
+        next();
+    }
 });
+
+async function denyAuth(to: Route, from: Route, next: any) {
+    let auth = await Storage.retrieveAuth();
+    if (Object.keys(auth).length > 0) {
+        next({
+            name: from.name ? from.name : "Home"
+        });
+    } else {
+        next();
+    }
+}
+
 
 export default router;

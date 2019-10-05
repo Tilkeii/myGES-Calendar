@@ -24,6 +24,7 @@
 import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import { IMyGESAuth } from "../types/auth";
+import * as Storage from "../scripts/storage";
 
 @Component
 export default class Login extends Vue {
@@ -39,7 +40,9 @@ export default class Login extends Vue {
         const auth = this.makeBaseAuth(this.email, this.password);
         try {
             const gesAuth = await this.connectMyGes(auth);
+            await Storage.saveAuth(gesAuth);
             console.log(gesAuth);
+            this.$router.push({name: 'Home'});
         } catch (err) {
             console.log(err);
         }
