@@ -26,6 +26,7 @@ import Vue from "vue";
 import { Component } from "vue-property-decorator";
 import { IMyGESAuth } from "../types/auth";
 import * as Storage from "../scripts/storage";
+import axios from 'axios';
 
 @Component
 export default class Login extends Vue {
@@ -68,6 +69,19 @@ export default class Login extends Vue {
                 }
             }
         );
+        return data;
+    }
+
+    private async getCalendarRawData(auth: IMyGESAuth){
+        let { data } = await this.$http.get<Object>('https://services.reseau-ges.fr/me/agenda', {
+            params:{
+                start:1568008800000,
+                end:1568527200000
+            },
+            headers: {
+                'Authorization': 'Bearer ' + auth.token
+            }
+        });
         return data;
     }
 }
