@@ -51,7 +51,9 @@ module.exports = env => {
             }
         },
         plugins: [
-            new CleanWebpackPlugin(),
+            new CleanWebpackPlugin({
+                cleanStaleWebpackAssets: false,
+            }),
             new CopyPlugin([
                 {
                     from: '.',
